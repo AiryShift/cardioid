@@ -27,10 +27,13 @@ class Circle:
         return abs(self._get_anchor(start) - self._get_anchor(end))
 
     def on_circumference(self, external_point):
-        return is_close(abs(external_point), self.radius, rel_tol=self.EPS)
+        return is_close(abs(external_point), self.radius, rel_tol=self.EPS*1e2)
 
     def on_line(self, external_point):
         for start, end in self.joined_anchors:
-            if is_close(self._anchor_distance(start, end), external_point, rel_tol=self.EPS):
+            # Triangle inequality
+            triangle_base = self._anchor_distance(start, end)
+            triangle_arms = abs(self._get_anchor(start) - external_point) + abs(self._get_anchor(end) - external_point)
+            if is_close(triangle_base, triangle_arms, rel_tol=self.EPS / 2.5):
                 return True
         return False
