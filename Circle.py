@@ -1,6 +1,7 @@
+import functools
+
 import cmath
 from cmath import pi
-import functools
 
 
 def is_close(a, b, *, rel_tol=1e-09, abs_tol=0.0):

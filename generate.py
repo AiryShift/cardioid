@@ -1,9 +1,11 @@
 import argparse
-from Circle import Circle
+import time
+
+from PIL import Image
+
 import config as cfg
 import numpy as np
-from PIL import Image
-import time
+from Circle import Circle
 
 
 def configure_argparser():
