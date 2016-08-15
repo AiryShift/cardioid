@@ -3,7 +3,6 @@ from Circle import Circle
 import config as cfg
 import numpy as np
 from PIL import Image
-import cmath
 import time
 
 
@@ -67,7 +66,11 @@ def main():
 
     # Output rendered image
     image = Image.fromarray(image_array)
-    image.save(cfg.OUT_FILE)
+    image.save('s{}r{}e{}a{}m{}.png'.format(args.size,
+                                            args.radius,
+                                            args.epsilon,
+                                            args.anchors,
+                                            args.multiplier))
 
     print('Took {} seconds'.format(time.time() - start_time))
 
