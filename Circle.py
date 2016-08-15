@@ -13,12 +13,13 @@ class Circle:
         self.radius = radius
         self.num_anchors = num_anchors
         self.EPS = EPS
-        self.joined_anchors = set()
+        self.joined_anchors = []
 
     def join_anchors(self, start, end):
         pairing = [start, end]
         pairing.sort()
-        self.joined_anchors.add(tuple(pairing))
+        if pairing not in self.joined_anchors:
+            self.joined_anchors.append(tuple(pairing))
 
     @functools.lru_cache(maxsize=False)
     def _get_anchor(self, offset):
