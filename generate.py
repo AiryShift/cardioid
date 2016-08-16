@@ -2,10 +2,9 @@ import argparse
 import os
 import time
 
-from PIL import Image
+import svgwrite
 
 import config as cfg
-import numpy as np
 from Circle import Circle
 
 
@@ -47,42 +46,56 @@ def configure_argparser():
     return parser.parse_args()
 
 
+def pixel_to_cm(num):
+    # http://www.endmemo.com/sconvert/centimeterpixel.php
+    return 0.026458 * num
+
+
 def main():
-    args = configure_argparser()
     start_time = time.time()
+    args = configure_argparser()
 
     # Create circle and join anchors
     circle = Circle(args.radius, args.anchors, args.epsilon)
     for anchor in range(args.anchors):
         circle.join_anchors(anchor, (anchor * args.multiplier) % args.anchors)
 
-    image_array = np.zeros((args.size, args.size, 3), 'uint8')
-    centre = complex(args.size / 2, args.size / 2)
-    for i in range(args.size):
-        if not i % 20:
-            print('i={}, running time={}'.format(i, time.time() - start_time))
-        normalised_point = complex(0, i) - centre
-        for j in range(args.size):
-            if circle.on_circumference(normalised_point):
-                image_array[j, i, :] = 255  # white
-            elif circle.on_line(normalised_point):
-                image_array[j, i, 0] = 255  # red
-            normalised_point += 1
-
-    # Output rendered image
-    image = Image.fromarray(image_array)
-    filename = 's{}r{}e{}a{}m{}v{}.png'.format(args.size,
+    filename = 's{}r{}e{}a{}m{}v{}.svg'.format(args.size,
                                                args.radius,
                                                args.epsilon,
                                                args.anchors,
                                                args.multiplier,
                                                cfg.VERSION)
+    image_size_cm = '{}cm'.format(pixel_to_cm(args.size))
+    dwg = svgwrite.drawing.Drawing(
+        filename=filename,
+        size=(image_size_cm, image_size_cm),
+        debug=True)
+    dwg.viewbox(0, 0, args.size, args.size)  # viewbox to enable scrolling
 
+    # Normalisation recenters the coordinate axes to the top left
+    normalisation = complex(args.size / 2, args.size / 2)
+    # Outlining circle
+    dwg.add(svgwrite.shapes.Circle(
+        center=(normalisation.real, normalisation.imag),
+        r=args.radius,
+        stroke='black',
+        stroke_width=2))
+    # Interconnecting lines
+    lines_group = dwg.add(dwg.g(stroke_width=2, stroke='red'))
+    for start, end in circle.joined_anchors:
+        start = circle.coordinates(start) + normalisation
+        end = circle.coordinates(end) + normalisation
+        lines_group.add(dwg.line(
+            start=(start.real, start.imag), end=(end.real, end.imag)))
+
+    # Output rendered image
     prev_wd = os.getcwd()
     path_to_file = os.path.join(os.getcwd(), 'output')
     try:
         os.chdir(path_to_file)
-        image.save(filename)
+        with open(filename, 'w', encoding='utf-8') as f:
+            dwg.write(f)
     except OSError:
         print('Failed to save image file')
     finally:
