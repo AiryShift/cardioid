@@ -4,3 +4,4 @@ ANCHORS = 50
 EPS = 1e-2
 MULTIPLIER = 2
 OUT_FILE = 'circle.png'
+VERSION = 1

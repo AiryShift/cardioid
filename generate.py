@@ -1,4 +1,5 @@
 import argparse
+import os
 import time
 
 from PIL import Image
@@ -70,11 +71,22 @@ def main():
 
     # Output rendered image
     image = Image.fromarray(image_array)
-    image.save('s{}r{}e{}a{}m{}.png'.format(args.size,
-                                            args.radius,
-                                            args.epsilon,
-                                            args.anchors,
-                                            args.multiplier))
+    filename = 's{}r{}e{}a{}m{}v{}.png'.format(args.size,
+                                               args.radius,
+                                               args.epsilon,
+                                               args.anchors,
+                                               args.multiplier,
+                                               cfg.VERSION)
+
+    prev_wd = os.getcwd()
+    path_to_file = os.path.join(os.getcwd(), 'output')
+    try:
+        os.chdir(path_to_file)
+        image.save(filename)
+    except OSError:
+        print('Failed to save image file')
+    finally:
+        os.chdir(prev_wd)
 
     print('Took {} seconds'.format(time.time() - start_time))
 
