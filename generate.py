@@ -9,7 +9,9 @@ from Circle import Circle
 
 
 def configure_argparser():
-    parser = argparse.ArgumentParser('Generates a shape')
+    parser = argparse.ArgumentParser(
+        'Generates a shape by joining lines between anchors on a circle'
+    )
     parser.add_argument(
         '-s', '--size',
         type=int,
@@ -61,9 +63,9 @@ def main():
         normalised_point = complex(0, i) - centre
         for j in range(args.size):
             if circle.on_circumference(normalised_point):
-                image_array[j, i, :] = 255
+                image_array[j, i, :] = 255  # white
             elif circle.on_line(normalised_point):
-                image_array[j, i, 0] = 255
+                image_array[j, i, 0] = 255  # red
             normalised_point += 1
 
     # Output rendered image
