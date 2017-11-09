@@ -3,4 +3,3 @@ RADIUS = 550
 ANCHORS = 200
 MULTIPLIER = 2
 OUT_FILE = 'circle.png'
-VERSION = 2

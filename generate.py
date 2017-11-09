@@ -55,11 +55,10 @@ def main():
     for anchor in range(args.anchors):
         circle.join_anchors(anchor, (anchor * args.multiplier) % args.anchors)
 
-    filename = 's{}r{}a{}m{}v{}.svg'.format(args.size,
+    filename = 's{}r{}a{}m{}.svg'.format(args.size,
                                             args.radius,
                                             args.anchors,
-                                            args.multiplier,
-                                            cfg.VERSION)
+                                            args.multiplier)
     image_size_cm = '{}cm'.format(pixel_to_cm(args.size))
     dwg = svgwrite.drawing.Drawing(
         filename=filename,
