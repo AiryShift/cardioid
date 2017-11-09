@@ -56,16 +56,17 @@ def main():
         circle.join_anchors(anchor, (anchor * args.multiplier) % args.anchors)
 
     filename = 's{}r{}a{}m{}v{}.svg'.format(args.size,
-                                               args.radius,
-                                               args.anchors,
-                                               args.multiplier,
-                                               cfg.VERSION)
+                                            args.radius,
+                                            args.anchors,
+                                            args.multiplier,
+                                            cfg.VERSION)
     image_size_cm = '{}cm'.format(pixel_to_cm(args.size))
     dwg = svgwrite.drawing.Drawing(
         filename=filename,
         size=(image_size_cm, image_size_cm),
         debug=True)
-    dwg.viewbox(0, 0, args.size, args.size)  # viewbox to enable scrolling
+    # viewbox to enable scrolling
+    dwg.viewbox(0, 0, args.size, args.size)
 
     # Normalisation recenters the coordinate axes to the top left
     normalisation = complex(args.size / 2, args.size / 2)
@@ -76,12 +77,11 @@ def main():
         stroke='black',
         stroke_width=2))
     # Interconnecting lines
-    lines_group = dwg.add(dwg.g(stroke_width=2, stroke='red'))
+    lines_group = dwg.add(dwg.g(stroke_width=1, stroke='red'))
     for start, end in circle.joined_anchors:
         start = circle.coordinates(start) + normalisation
         end = circle.coordinates(end) + normalisation
-        lines_group.add(dwg.line(
-            start=(start.real, start.imag), end=(end.real, end.imag)))
+        lines_group.add(dwg.line(start=(start.real, start.imag), end=(end.real, end.imag)))
 
     # Output rendered image
     prev_wd = os.getcwd()

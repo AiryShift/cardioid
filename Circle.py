@@ -11,8 +11,7 @@ class Circle:
         self.joined_anchors = []
 
     def join_anchors(self, start, end):
-        pairing = [start, end]
-        pairing.sort()
+        pairing = sorted([start, end])
         if pairing not in self.joined_anchors:
             self.joined_anchors.append(tuple(pairing))
 
