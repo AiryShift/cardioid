@@ -2,7 +2,6 @@
 
 import argparse
 import os
-import time
 
 import svgwrite
 
@@ -27,12 +26,6 @@ def configure_argparser():
         help='Radius of the circle used'
     )
     parser.add_argument(
-        '-e', '--epsilon',
-        type=float,
-        default=cfg.EPS,
-        help='Default float precision'
-    )
-    parser.add_argument(
         '-a', '--anchors',
         type=int,
         default=cfg.ANCHORS,
@@ -45,7 +38,7 @@ def configure_argparser():
         help='Determines anchor to join to'
     )
 
-    return parser.parse_args()
+    return parser
 
 
 def pixel_to_cm(num):
@@ -54,17 +47,16 @@ def pixel_to_cm(num):
 
 
 def main():
-    start_time = time.time()
-    args = configure_argparser()
+    parser = configure_argparser()
+    args = parser.parse_args()
 
     # Create circle and join anchors
-    circle = Circle(args.radius, args.anchors, args.epsilon)
+    circle = Circle(args.radius, args.anchors)
     for anchor in range(args.anchors):
         circle.join_anchors(anchor, (anchor * args.multiplier) % args.anchors)
 
-    filename = 's{}r{}e{}a{}m{}v{}.svg'.format(args.size,
+    filename = 's{}r{}a{}m{}v{}.svg'.format(args.size,
                                                args.radius,
-                                               args.epsilon,
                                                args.anchors,
                                                args.multiplier,
                                                cfg.VERSION)
@@ -103,7 +95,6 @@ def main():
     finally:
         os.chdir(prev_wd)
 
-    print('Took {} seconds'.format(time.time() - start_time))
 
 if __name__ == '__main__':
     main()

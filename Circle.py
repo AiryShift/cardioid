@@ -5,10 +5,9 @@ from cmath import pi
 
 
 class Circle:
-    def __init__(self, radius, num_anchors, EPS):
+    def __init__(self, radius, num_anchors):
         self.radius = radius
         self.num_anchors = num_anchors
-        self.EPS = EPS
         self.joined_anchors = []
 
     def join_anchors(self, start, end):
